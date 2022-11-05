@@ -48,4 +48,9 @@ public class OrderController {
                                                           @PathVariable Integer productId){
         orderService.deleteProductFromOrder(productId, orderId);
     }
+
+    @PutMapping("/{orderId}")
+    public void changeOrderStatus(@PathVariable Integer orderId, @RequestBody Boolean status){
+        orderService.changeOrderStatus(orderId, status);
+    }
 }

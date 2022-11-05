@@ -32,6 +32,9 @@ public class Orders {
     @NotNull
     private LocalDateTime expectedDelivery;
 
+    @Column(nullable = false)
+    private Boolean completed;
+
     @OneToMany(mappedBy = "orderedItemsId.orders")
     @JsonManagedReference
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

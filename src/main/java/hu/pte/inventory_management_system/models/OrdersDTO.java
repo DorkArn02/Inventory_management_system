@@ -11,8 +11,9 @@ import java.util.List;
 @Getter
 @Builder
 public class OrdersDTO {
+    private Integer order_id;
     private LocalDateTime begin;
     private LocalDateTime expectedDelivery;
+    private Boolean completed;
     private List<OrderedItemsDTO> orderedItemsDTOS;
-
 }

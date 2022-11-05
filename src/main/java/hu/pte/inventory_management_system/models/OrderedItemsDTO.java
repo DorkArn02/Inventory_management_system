@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class OrderedItemsDTO {
+    private Integer product_id;
     private String name;
     private String description;
     private Float price;

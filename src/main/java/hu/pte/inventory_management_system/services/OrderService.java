@@ -31,6 +31,7 @@ public class OrderService {
      */
     public Orders createNewOrder(Orders orders){
         orders.setCreated(LocalDateTime.now());
+        orders.setCompleted(false);
         return orderRepository.save(orders);
     }
 
@@ -45,14 +46,17 @@ public class OrderService {
             orders.getOrderedItemsList().forEach(orderedItems -> {
                 Product p = orderedItems.getOrderedItemsId().getProduct();
                 orderedItemsDTOS.add(OrderedItemsDTO.builder().name(p.getName())
+                        .product_id(p.getId())
                         .price(p.getPrice())
                         .quantity(orderedItems.getQuantity())
                         .description(p.getDescription()).thumbnail(p.getThumbnail())
                         .total_price(p.getPrice()*orderedItems.getQuantity()).build());
             });
             ordersDTOS.add(OrdersDTO.builder()
+                    .order_id(orders.getId())
                     .begin(orders.getCreated())
                     .expectedDelivery(orders.getExpectedDelivery())
+                    .completed(orders.getCompleted())
                     .orderedItemsDTOS(orderedItemsDTOS)
                     .build());
         });
@@ -75,6 +79,7 @@ public class OrderService {
         orders.getOrderedItemsList().forEach(orderedItems -> {
            Product p = orderedItems.getOrderedItemsId().getProduct();
            orderedItemsDTOS.add(OrderedItemsDTO.builder().name(p.getName())
+                   .product_id(p.getId())
                    .price(p.getPrice())
                    .quantity(orderedItems.getQuantity())
                    .description(p.getDescription()).thumbnail(p.getThumbnail())
@@ -82,9 +87,11 @@ public class OrderService {
         });
 
         return OrdersDTO.builder()
+                .order_id(orders.getId())
                 .begin(orders.getCreated())
                 .expectedDelivery(orders.getExpectedDelivery())
                 .orderedItemsDTOS(orderedItemsDTOS)
+                .completed(orders.getCompleted())
                 .build();
     }
 
@@ -136,5 +143,19 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         orderedItemsRepository.deleteById(new OrderedItemsId(orderRepository.findById(orderId).get(), productRepository.findById(productId).get()));
+    }
+
+    /**
+     * Changes the status of the order
+     * @param orderId PathVariable Order id
+     * @param status Boolean
+     */
+    public void changeOrderStatus(Integer orderId, Boolean status){
+        if(orderRepository.findById(orderId).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        Orders orders = orderRepository.findById(orderId).get();
+        orders.setCompleted(status);
+        orderRepository.save(orders);
     }
 }
