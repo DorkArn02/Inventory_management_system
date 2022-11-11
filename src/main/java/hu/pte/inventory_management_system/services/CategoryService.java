@@ -2,6 +2,7 @@ package hu.pte.inventory_management_system.services;
 
 import hu.pte.inventory_management_system.models.Category;
 import hu.pte.inventory_management_system.repositories.CategoryRepository;
+import hu.pte.inventory_management_system.services.interfaces.ICategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,7 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-public class CategoryService {
+public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
 
     public CategoryService(CategoryRepository categoryRepository) {
@@ -21,7 +22,8 @@ public class CategoryService {
      * @param category RequestBody category
      * @return Created category
      */
-    public Category addNewCategory(Category category){
+    @Override
+    public Category addCategory(Category category){
         return categoryRepository.save(category);
     }
 
@@ -30,6 +32,7 @@ public class CategoryService {
      * @param id PathVariable category's id
      * @return Category
      */
+    @Override
     public Category getCategoryById(Integer id){
         if(categoryRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -41,6 +44,7 @@ public class CategoryService {
      * Gets list of categories
      * @return List of categories
      */
+    @Override
     public List<Category> getCategories(){
         return categoryRepository.findAll();
     }
@@ -49,6 +53,7 @@ public class CategoryService {
      * Deletes a specified category
      * @param id PathVariable category's id
      */
+    @Override
     public void deleteCategoryById(Integer id){
         if(categoryRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -62,6 +67,7 @@ public class CategoryService {
      * @param categoryNew RequestBody Category
      * @return Updated category
      */
+    @Override
     public Category updateCategoryById(Integer id, Category categoryNew){
         if(categoryRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

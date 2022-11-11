@@ -1,11 +1,10 @@
 package hu.pte.inventory_management_system.services;
 
-import hu.pte.inventory_management_system.models.Product;
 import hu.pte.inventory_management_system.models.Storage;
 import hu.pte.inventory_management_system.models.StorageId;
 import hu.pte.inventory_management_system.repositories.ProductRepository;
 import hu.pte.inventory_management_system.repositories.StorageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import hu.pte.inventory_management_system.services.interfaces.IStorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,16 +12,30 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-public class StorageService {
-    @Autowired
-    private StorageRepository storageRepository;
+public class StorageService implements IStorageService {
+    private final StorageRepository storageRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
+    public StorageService(StorageRepository storageRepository, ProductRepository productRepository) {
+        this.storageRepository = storageRepository;
+        this.productRepository = productRepository;
+    }
+
+    /**
+     * Adds a new product to the storage
+     * @param productId PathVariable
+     * @param quantity RequestBody
+     * @return Storage
+     */
+    @Override
     public Storage addProductToStorage(Integer productId, Integer quantity){
         if(productRepository.findById(productId).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        if(quantity <= 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         StorageId storageId = new StorageId();
@@ -41,9 +54,19 @@ public class StorageService {
         return storageRepository.save(storage);
     }
 
+    /**
+     * Removes an existing product from the storage
+     * @param productId PathVariable
+     * @param quantity RequestBody
+     */
+    @Override
     public void removeProductFromStorage(Integer productId, Integer quantity){
         if(productRepository.findById(productId).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        if(quantity <= 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         StorageId storageId = new StorageId();
@@ -65,6 +88,11 @@ public class StorageService {
         storageRepository.save(storage);
     }
 
+    /**
+     * Returns the storage's contents
+     * @return List<Storage>
+     */
+    @Override
     public List<Storage> getProductsFromStorage(){
         return storageRepository.findAll();
     }

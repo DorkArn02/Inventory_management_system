@@ -3,6 +3,7 @@ package hu.pte.inventory_management_system.services;
 import hu.pte.inventory_management_system.models.Product;
 import hu.pte.inventory_management_system.repositories.CategoryRepository;
 import hu.pte.inventory_management_system.repositories.ProductRepository;
+import hu.pte.inventory_management_system.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class ProductService {
+public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
@@ -36,7 +37,8 @@ public class ProductService {
      * @param product RequestBody Product object
      * @return Product
      */
-    public Product addNewProduct(Product product){
+    @Override
+    public Product addProduct(Product product){
         try {
             return productRepository.save(product);
         }catch (DataIntegrityViolationException e){
@@ -49,6 +51,7 @@ public class ProductService {
      * @param id PathVariable id of the product
      * @return Product
      */
+    @Override
     public Product getProductById(Integer id){
         if(productRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -60,6 +63,7 @@ public class ProductService {
      * Deletes a specified product by id
      * @param id PathVariable id of the product
      */
+    @Override
     public void deleteProductById(Integer id){
         if(productRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -73,6 +77,7 @@ public class ProductService {
      * @param productNew RequestBody new product
      * @return Product
      */
+    @Override
     public Product updateProductById(Integer id, Product productNew){
         if(productRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -90,6 +95,7 @@ public class ProductService {
      * Gets all products from the DB
      * @return List of products
      */
+    @Override
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
@@ -100,6 +106,7 @@ public class ProductService {
      * @param categoryId PathVariable
      * @return Updated Product
      */
+    @Override
     public Product setProductCategory(Integer productId, Integer categoryId){
         if(productRepository.findById(productId).isEmpty() ||
         categoryRepository.findById(categoryId).isEmpty()){
@@ -122,6 +129,7 @@ public class ProductService {
      * @param productId PathVariable
      * @param categoryId PathVariable
      */
+    @Override
     public void deleteProductCategory(Integer productId, Integer categoryId){
         if(productRepository.findById(productId).isEmpty() ||
                 categoryRepository.findById(categoryId).isEmpty()){
@@ -143,6 +151,7 @@ public class ProductService {
      * @param id PathVariable id
      * @param file RequestBody MultipartFile
      */
+    @Override
     public void uploadPictureToProduct(Integer id, MultipartFile file) throws IOException {
 
         if(productRepository.findById(id).isEmpty()){
@@ -169,6 +178,7 @@ public class ProductService {
      * @param productId PathVariable id
      * @return Product's thumbnail
      */
+    @Override
     public ResponseEntity<?> getImage(Integer productId) throws IOException {
         if(productRepository.findById(productId).isPresent()){
             Product product = productRepository.findById(productId).get();

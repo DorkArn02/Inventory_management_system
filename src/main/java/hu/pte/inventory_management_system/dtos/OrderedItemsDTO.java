@@ -1,4 +1,4 @@
-package hu.pte.inventory_management_system.models;
+package hu.pte.inventory_management_system.dtos;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -3,6 +3,7 @@ package hu.pte.inventory_management_system.models;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class Orders {
 
     @Column(nullable = false)
     @DateTimeFormat
+    @NotNull
     private LocalDateTime created;
 
     @Column(nullable = false)

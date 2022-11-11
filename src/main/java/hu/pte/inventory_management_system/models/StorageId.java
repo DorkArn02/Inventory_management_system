@@ -9,4 +9,15 @@ import java.io.Serializable;
 @Setter
 public class StorageId implements Serializable {
     private Integer productId;
+
+    // Composite-id class should override equals() and hashCode()
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

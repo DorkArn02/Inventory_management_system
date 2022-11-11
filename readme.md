@@ -4,7 +4,7 @@
 
 ### MySQL or H2-database
 
-![Database layout](./database_layout.png)
+![Database layout](database_layout.png)
 
 ## API endpoints
 
@@ -49,7 +49,34 @@ http://localhost:8080/swagger-ui/index.html#/
 - Category
 - Order
 - Storage
-- Discount
+
+## Example POST requests:
+
+### Create new product
+```json
+{
+  "name": "string",
+  "description": "string",
+  "price": 0,
+  "thumbnail": "string"
+}
+```
+
+### Create new category
+```json
+{
+  "name": "string"
+}
+```
+
+### Create new order
+```json
+{
+  "expectedDelivery": "2022-11-11T13:07:13.911Z",
+  "completed": false
+}
+```
+
 
 ## Thumbnail location 
 

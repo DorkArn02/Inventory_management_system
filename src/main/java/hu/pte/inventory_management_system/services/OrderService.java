@@ -1,9 +1,12 @@
 package hu.pte.inventory_management_system.services;
 
+import hu.pte.inventory_management_system.dtos.OrderedItemsDTO;
+import hu.pte.inventory_management_system.dtos.OrdersDTO;
 import hu.pte.inventory_management_system.models.*;
 import hu.pte.inventory_management_system.repositories.OrderRepository;
 import hu.pte.inventory_management_system.repositories.OrderedItemsRepository;
 import hu.pte.inventory_management_system.repositories.ProductRepository;
+import hu.pte.inventory_management_system.services.interfaces.IOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class OrderService {
+public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final OrderedItemsRepository orderedItemsRepository;
     private final ProductRepository productRepository;
@@ -29,6 +32,7 @@ public class OrderService {
      * @param orders RequestBody order
      * @return Order
      */
+    @Override
     public Orders createNewOrder(Orders orders){
         orders.setCreated(LocalDateTime.now());
         orders.setCompleted(false);
@@ -39,28 +43,41 @@ public class OrderService {
      * Get list of orders
      * @return List of orders
      */
+    @Override
     public List<OrdersDTO> getAllOrders(){
+        /* Custom mapping method for easier json readability */
         List<OrdersDTO> ordersDTOS = new ArrayList<>();
         orderRepository.findAll().forEach(orders -> {
-            List<OrderedItemsDTO> orderedItemsDTOS = new ArrayList<>();
-            orders.getOrderedItemsList().forEach(orderedItems -> {
-                Product p = orderedItems.getOrderedItemsId().getProduct();
-                orderedItemsDTOS.add(OrderedItemsDTO.builder().name(p.getName())
-                        .product_id(p.getId())
-                        .price(p.getPrice())
-                        .quantity(orderedItems.getQuantity())
-                        .description(p.getDescription()).thumbnail(p.getThumbnail())
-                        .total_price(p.getPrice()*orderedItems.getQuantity()).build());
-            });
+            List<OrderedItemsDTO> orderedItemsDTOS = transformOrderedItemsToDTO(orders);
+
             ordersDTOS.add(OrdersDTO.builder()
-                    .order_id(orders.getId())
-                    .begin(orders.getCreated())
+                    .id(orders.getId())
+                    .created(orders.getCreated())
                     .expectedDelivery(orders.getExpectedDelivery())
                     .completed(orders.getCompleted())
-                    .orderedItemsDTOS(orderedItemsDTOS)
+                    .orderedItemsList(orderedItemsDTOS)
                     .build());
         });
        return ordersDTOS;
+    }
+
+    /**
+     * A helper method to transform the data to friendly form
+     * @param orders Orders
+     * @return List<OrderedItemsDTO>
+     */
+    private List<OrderedItemsDTO> transformOrderedItemsToDTO(Orders orders){
+        List<OrderedItemsDTO> orderedItemsDTOS = new ArrayList<>();
+        orders.getOrderedItemsList().forEach(orderedItems -> {
+            Product p = orderedItems.getOrderedItemsId().getProduct();
+            orderedItemsDTOS.add(OrderedItemsDTO.builder().name(p.getName())
+                    .product_id(p.getId())
+                    .price(p.getPrice())
+                    .quantity(orderedItems.getQuantity())
+                    .description(p.getDescription()).thumbnail(p.getThumbnail())
+                    .total_price(p.getPrice()*orderedItems.getQuantity()).build());
+        });
+        return orderedItemsDTOS;
     }
 
     /**
@@ -68,29 +85,19 @@ public class OrderService {
      * @param id PathVariable id
      * @return Order
      */
+    @Override
     public OrdersDTO getOrderById(Integer id){
         if(orderRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         Orders orders = orderRepository.findById(id).get();
 
-        List<OrderedItemsDTO> orderedItemsDTOS = new ArrayList<>();
+        List<OrderedItemsDTO> orderedItemsDTOS = transformOrderedItemsToDTO(orders);
 
-        orders.getOrderedItemsList().forEach(orderedItems -> {
-           Product p = orderedItems.getOrderedItemsId().getProduct();
-           orderedItemsDTOS.add(OrderedItemsDTO.builder().name(p.getName())
-                   .product_id(p.getId())
-                   .price(p.getPrice())
-                   .quantity(orderedItems.getQuantity())
-                   .description(p.getDescription()).thumbnail(p.getThumbnail())
-                   .total_price(p.getPrice()*orderedItems.getQuantity()).build());
-        });
-
-        return OrdersDTO.builder()
-                .order_id(orders.getId())
-                .begin(orders.getCreated())
+        return OrdersDTO.builder().id(orders.getId())
+                .created(orders.getCreated())
                 .expectedDelivery(orders.getExpectedDelivery())
-                .orderedItemsDTOS(orderedItemsDTOS)
+                .orderedItemsList(orderedItemsDTOS)
                 .completed(orders.getCompleted())
                 .build();
     }
@@ -99,6 +106,7 @@ public class OrderService {
      * Deletes a specified order
      * @param id PathVariable id
      */
+    @Override
     public void deleteOrderById(Integer id){
         if(orderRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -113,6 +121,7 @@ public class OrderService {
      * @param quantity RequestBody quantity
      * @return OrderedItems
      */
+    @Override
     public OrderedItems addProductToOrder(Integer productId, Integer orderId, Integer quantity){
         if(orderRepository.findById(orderId).isEmpty() ||
         productRepository.findById(productId).isEmpty()){
@@ -134,6 +143,7 @@ public class OrderService {
      * @param productId PathVariable Product id
      * @param orderId PathVariable Order id
      */
+    @Override
     public void deleteProductFromOrder(Integer productId, Integer orderId){
         if(orderRepository.findById(orderId).isEmpty() ||
                 productRepository.findById(productId).isEmpty()){
@@ -150,6 +160,7 @@ public class OrderService {
      * @param orderId PathVariable Order id
      * @param status Boolean
      */
+    @Override
     public void changeOrderStatus(Integer orderId, Boolean status){
         if(orderRepository.findById(orderId).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

@@ -20,6 +20,6 @@ public class OrderedItems {
     @JsonUnwrapped
     private OrderedItemsId orderedItemsId;
 
-    @Min(value=2)
+    @Min(value=1)
     private Integer quantity;
 }
