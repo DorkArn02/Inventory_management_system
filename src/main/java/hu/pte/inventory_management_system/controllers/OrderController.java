@@ -4,7 +4,6 @@ import hu.pte.inventory_management_system.models.OrderedItems;
 import hu.pte.inventory_management_system.models.Orders;
 import hu.pte.inventory_management_system.dtos.OrdersDTO;
 import hu.pte.inventory_management_system.services.OrderService;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +16,9 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    private final ModelMapper modelMapper;
 
-    public OrderController(OrderService orderService, ModelMapper modelMapper) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/")
@@ -35,7 +32,7 @@ public class OrderController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<OrdersDTO> getOrderById(@PathVariable Integer id){
-        return new ResponseEntity<>(modelMapper.map(orderService.getOrderById(id), OrdersDTO.class), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
