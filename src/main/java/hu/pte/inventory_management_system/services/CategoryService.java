@@ -1,12 +1,15 @@
 package hu.pte.inventory_management_system.services;
 
 import hu.pte.inventory_management_system.models.Category;
+import hu.pte.inventory_management_system.models.dtos.CategoryRequestDTO;
+import hu.pte.inventory_management_system.models.dtos.CategoryResponseDTO;
 import hu.pte.inventory_management_system.repositories.CategoryRepository;
 import hu.pte.inventory_management_system.services.interfaces.ICategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,30 +26,46 @@ public class CategoryService implements ICategoryService {
      * @return Created category
      */
     @Override
-    public Category addCategory(Category category){
-        return categoryRepository.save(category);
+    public CategoryRequestDTO addCategory(CategoryRequestDTO category){
+        // No category sent in request body
+        if(category.getName() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        // Category name is unique
+        if(categoryRepository.findByName(category.getName()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
+        Category cat = new Category();
+        cat.setName(category.getName());
+
+        return new CategoryRequestDTO(categoryRepository.save(cat));
     }
 
     /**
      * Gets a specified category by id
+     *
      * @param id PathVariable category's id
      * @return Category
      */
     @Override
-    public Category getCategoryById(Integer id){
+    public CategoryResponseDTO getCategoryById(Integer id){
         if(categoryRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return categoryRepository.findById(id).get();
+        return new CategoryResponseDTO(categoryRepository.findById(id).get());
     }
 
     /**
      * Gets list of categories
+     *
      * @return List of categories
      */
     @Override
-    public List<Category> getCategories(){
-        return categoryRepository.findAll();
+    public List<CategoryResponseDTO> getCategories(){
+        List<CategoryResponseDTO> categoryResponseDTOS = new ArrayList<>();
+        categoryRepository.findAll().forEach(category -> categoryResponseDTOS.add(new CategoryResponseDTO(category)));
+        return categoryResponseDTOS;
     }
 
     /**
@@ -58,6 +77,7 @@ public class CategoryService implements ICategoryService {
         if(categoryRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        // PHPMYADMIN -> PRODUCT_CATEGORIES -> STRUCTURE -> TWO FOREIGN KEYS ON CASCADE DELETE
         categoryRepository.deleteById(id);
     }
 
@@ -68,14 +88,23 @@ public class CategoryService implements ICategoryService {
      * @return Updated category
      */
     @Override
-    public Category updateCategoryById(Integer id, Category categoryNew){
+    public CategoryRequestDTO updateCategoryById(Integer id, CategoryRequestDTO categoryNew){
+        // No category sent in request body
+        if(categoryNew.getName() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        // No category found
         if(categoryRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        // Category name is unique
+        if(categoryRepository.findByName(categoryNew.getName()).isPresent()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
         Category category = categoryRepository.findById(id).get();
         category.setName(categoryNew.getName());
 
-        return categoryRepository.save(category);
+        return new CategoryRequestDTO(categoryRepository.save(category));
     }
-
 }

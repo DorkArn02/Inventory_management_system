@@ -8,8 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Min;
 import java.util.Set;
 
 @Entity
@@ -23,20 +22,20 @@ public class Product {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    @NotBlank
     private String name;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    @NotBlank
     private String description;
 
     @Column(nullable = false, precision = 2)
-    @NotNull
     private Float price;
 
     @Column(nullable = false)
-    @NotBlank
     private String thumbnail;
+
+    @Column(nullable = false)
+    @Min(0)
+    private Integer quantity;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)

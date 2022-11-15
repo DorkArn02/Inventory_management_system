@@ -1,14 +1,15 @@
 package hu.pte.inventory_management_system.services.interfaces;
 
-import hu.pte.inventory_management_system.models.Category;
+import hu.pte.inventory_management_system.models.dtos.CategoryRequestDTO;
+import hu.pte.inventory_management_system.models.dtos.CategoryResponseDTO;
 
 import java.util.List;
 
 public interface ICategoryService {
-    Category addCategory(Category category);
-    Category getCategoryById(Integer id);
-    List<Category> getCategories();
+    CategoryRequestDTO addCategory(CategoryRequestDTO category);
+    CategoryResponseDTO getCategoryById(Integer id);
+    List<CategoryResponseDTO> getCategories();
     void deleteCategoryById(Integer id);
-    Category updateCategoryById(Integer id, Category categoryNew);
+    CategoryRequestDTO updateCategoryById(Integer id, CategoryRequestDTO categoryNew);
 
 }

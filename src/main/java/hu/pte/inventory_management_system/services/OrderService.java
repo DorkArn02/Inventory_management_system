@@ -1,8 +1,12 @@
 package hu.pte.inventory_management_system.services;
 
-import hu.pte.inventory_management_system.dtos.OrderedItemsDTO;
-import hu.pte.inventory_management_system.dtos.OrdersDTO;
-import hu.pte.inventory_management_system.models.*;
+import hu.pte.inventory_management_system.models.OrderedItems;
+import hu.pte.inventory_management_system.models.OrderedItemsId;
+import hu.pte.inventory_management_system.models.Orders;
+import hu.pte.inventory_management_system.models.Product;
+import hu.pte.inventory_management_system.models.dtos.OrderRequestDTO;
+import hu.pte.inventory_management_system.models.dtos.OrderedItemsDTO;
+import hu.pte.inventory_management_system.models.dtos.OrdersDTO;
 import hu.pte.inventory_management_system.repositories.OrderRepository;
 import hu.pte.inventory_management_system.repositories.OrderedItemsRepository;
 import hu.pte.inventory_management_system.repositories.ProductRepository;
@@ -33,10 +37,14 @@ public class OrderService implements IOrderService {
      * @return Order
      */
     @Override
-    public Orders createNewOrder(Orders orders){
-        orders.setCreated(LocalDateTime.now());
-        orders.setCompleted(false);
-        return orderRepository.save(orders);
+    public OrderRequestDTO createNewOrder(OrderRequestDTO orders){
+
+        Orders o = new Orders();
+        o.setCompleted(false);
+        o.setCreated(LocalDateTime.now());
+        o.setExpectedDelivery(orders.getExpectedDelivery());
+
+        return new OrderRequestDTO(orderRepository.save(o));
     }
 
     /**

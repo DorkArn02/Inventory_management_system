@@ -1,11 +1,12 @@
 package hu.pte.inventory_management_system.controllers;
 
 import hu.pte.inventory_management_system.models.OrderedItems;
-import hu.pte.inventory_management_system.models.Orders;
-import hu.pte.inventory_management_system.dtos.OrdersDTO;
+import hu.pte.inventory_management_system.models.dtos.OrderRequestDTO;
+import hu.pte.inventory_management_system.models.dtos.OrdersDTO;
 import hu.pte.inventory_management_system.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
+@Validated
 public class OrderController {
     private final OrderService orderService;
 
@@ -22,7 +24,7 @@ public class OrderController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Orders> createNewOrder(@RequestBody @Valid Orders orders){
+    public ResponseEntity<OrderRequestDTO> createNewOrder(@RequestBody @Valid OrderRequestDTO orders){
         return new ResponseEntity<>(orderService.createNewOrder(orders), HttpStatus.CREATED);
     }
 
