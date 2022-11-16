@@ -48,7 +48,7 @@ http://localhost:8080/swagger-ui/index.html#/
 - Product
 - Category
 - Order
-- Storage
+- OrderedItems
 
 ## Example POST requests:
 
@@ -57,8 +57,7 @@ http://localhost:8080/swagger-ui/index.html#/
 {
   "name": "string",
   "description": "string",
-  "price": 0,
-  "thumbnail": "string"
+  "price": 0
 }
 ```
 
@@ -72,8 +71,7 @@ http://localhost:8080/swagger-ui/index.html#/
 ### Create new order
 ```json
 {
-  "expectedDelivery": "2022-11-11T13:07:13.911Z",
-  "completed": false
+  "expectedDelivery": "2022-11-11T13:07:13.911Z"
 }
 ```
 
@@ -83,6 +81,7 @@ http://localhost:8080/swagger-ui/index.html#/
 Go to the `application.properties` and edit `image_location` property
 The products' thumbnails will save in this folder.
 
+If you add a new product to the database the `thumbnail` property value will be automatically set to `default.png`.
 
 ## Configure mysql database with XAMPP
 1. Go to phpmyadmin and create a new database

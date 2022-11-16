@@ -17,5 +17,5 @@ public interface IProductService {
     void setProductCategory(Integer productId, Integer categoryId);
     void deleteProductCategory(Integer productId, Integer categoryId);
     void uploadPictureToProduct(Integer id, MultipartFile file) throws IOException;
-    ResponseEntity<?> getImage(Integer productId) throws IOException;
+    ResponseEntity<?> getImage(Integer productId);
 }

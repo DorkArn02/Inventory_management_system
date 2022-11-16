@@ -65,7 +65,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/thumbnail/{productId}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE})
-    public ResponseEntity<?> getImage(@PathVariable Integer productId) throws IOException {
+    public ResponseEntity<?> getImage(@PathVariable Integer productId) {
         return productService.getImage(productId);
     }
 }
