@@ -13,5 +13,5 @@ public interface IOrderService {
     void deleteOrderById(Integer id);
     OrderedItems addProductToOrder(Integer productId, Integer orderId, Integer quantity);
     void deleteProductFromOrder(Integer productId, Integer orderId);
-    void changeOrderStatus(Integer orderId, Boolean status);
+    void changeOrderStatus(Integer orderId);
 }

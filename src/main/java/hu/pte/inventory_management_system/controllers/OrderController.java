@@ -56,7 +56,7 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public void changeOrderStatus(@PathVariable Integer orderId, @RequestBody Boolean status){
-        orderService.changeOrderStatus(orderId, status);
+    public void changeOrderStatus(@PathVariable Integer orderId){
+        orderService.changeOrderStatus(orderId);
     }
 }

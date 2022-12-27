@@ -21,7 +21,7 @@ public class Product {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false, columnDefinition = "TEXT")

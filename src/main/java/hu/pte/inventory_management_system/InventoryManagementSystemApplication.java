@@ -19,7 +19,7 @@ public class InventoryManagementSystemApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins(CorsConfiguration.ALL);
+                registry.addMapping("/**").allowedOrigins(CorsConfiguration.ALL).allowedMethods("*");
             }
         };
     }

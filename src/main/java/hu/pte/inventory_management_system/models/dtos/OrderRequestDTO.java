@@ -14,10 +14,12 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class OrderRequestDTO {
+    private Integer id;
     @NotNull
     private LocalDateTime expectedDelivery;
 
     public OrderRequestDTO(Orders orders){
+        this.id = orders.getId();
         this.expectedDelivery = orders.getExpectedDelivery();
     }
 }

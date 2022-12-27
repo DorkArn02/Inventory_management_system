@@ -5,6 +5,7 @@ import hu.pte.inventory_management_system.models.dtos.CategoryRequestDTO;
 import hu.pte.inventory_management_system.models.dtos.CategoryResponseDTO;
 import hu.pte.inventory_management_system.repositories.CategoryRepository;
 import hu.pte.inventory_management_system.services.interfaces.ICategoryService;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,11 +31,6 @@ public class CategoryService implements ICategoryService {
         // No category sent in request body
         if(category.getName() == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-        // Category name is unique
-        if(categoryRepository.findByName(category.getName()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
 
         Category cat = new Category();
         cat.setName(category.getName());
@@ -64,7 +60,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public List<CategoryResponseDTO> getCategories(){
         List<CategoryResponseDTO> categoryResponseDTOS = new ArrayList<>();
-        categoryRepository.findAll().forEach(category -> categoryResponseDTOS.add(new CategoryResponseDTO(category)));
+        categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "id")).forEach(category -> categoryResponseDTOS.add(new CategoryResponseDTO(category)));
         return categoryResponseDTOS;
     }
 
@@ -96,10 +92,6 @@ public class CategoryService implements ICategoryService {
         // No category found
         if(categoryRepository.findById(id).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        // Category name is unique
-        if(categoryRepository.findByName(categoryNew.getName()).isPresent()){
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         Category category = categoryRepository.findById(id).get();

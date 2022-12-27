@@ -38,12 +38,10 @@ public class OrderService implements IOrderService {
      */
     @Override
     public OrderRequestDTO createNewOrder(OrderRequestDTO orders){
-
         Orders o = new Orders();
         o.setCompleted(false);
         o.setCreated(LocalDateTime.now());
         o.setExpectedDelivery(orders.getExpectedDelivery());
-
         return new OrderRequestDTO(orderRepository.save(o));
     }
 
@@ -166,15 +164,14 @@ public class OrderService implements IOrderService {
     /**
      * Changes the status of the order
      * @param orderId PathVariable Order id
-     * @param status Boolean
      */
     @Override
-    public void changeOrderStatus(Integer orderId, Boolean status){
+    public void changeOrderStatus(Integer orderId){
         if(orderRepository.findById(orderId).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         Orders orders = orderRepository.findById(orderId).get();
-        orders.setCompleted(status);
+        orders.setCompleted(!orders.getCompleted());
         orderRepository.save(orders);
     }
 }

@@ -99,11 +99,6 @@ public class ProductService implements IProductService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        if(productRepository.findByName(productNew.getName()).isPresent()){
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-
-
         Product product = productRepository.findById(id).get();
         product.setName(productNew.getName());
         product.setDescription(productNew.getDescription());
@@ -193,6 +188,11 @@ public class ProductService implements IProductService {
         Product product = productRepository.findById(id).get();
 
         String ext = Objects.requireNonNull(file.getOriginalFilename()).split("\\.")[1];
+
+        File f = new File(FILE_PATH + product.getThumbnail());
+        if(f.delete() && !f.getName().equals("default.png")){
+            System.out.println(product.getThumbnail() + " image deleted");
+        }
 
         product.setThumbnail(product.getName() + "." + ext);
 

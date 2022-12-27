@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 public class ProductRequestDTO {
+    private Integer id;
     @NotBlank(message = "Product's name should not be blank.")
     private String name;
 
@@ -25,6 +26,7 @@ public class ProductRequestDTO {
     private Float price;
 
     public ProductRequestDTO(Product product) {
+        this.id = product.getId();
         this.name = product.getName();
         this.description = product.getDescription();
         this.price = product.getPrice();
