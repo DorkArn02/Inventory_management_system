@@ -1,15 +1,21 @@
 # Inventory management system
 
-## Database layout
+## About this program
 
-### MySQL or H2-database
+This is an inventory management system written in Spring Boot framework.
+You can find a more detailed documentation of this program in the [wiki](https://github.com/DorkArn02/Inventory_management_system/wiki) of this repository.
 
-![Database layout](database_layout.png)
+## Database layout in MySQL Workbench
+
+![img.png](database_layout.png)
 
 ## API endpoints
 
 ### Swagger REST API docs:
 http://localhost:8080/swagger-ui/index.html#/
+
+### Postman file used for testing:
+https://pastebin.com/8A2jGZPh
 
 ### product-controller
 - GET all products `:8080/api/products`
@@ -43,12 +49,17 @@ http://localhost:8080/swagger-ui/index.html#/
 - DELETE, remove some product from storage `:8080/api/storage/{productId}`
 - GET the content of storage `:8080/api/storage/`
 
+### transaction-controller
+- GET all transactions: `:8080/api/transaction`
+- GET transaction by id: `:8080/api/transaction/{transactionId}`
+
 ## Models
 
 - Product
 - Category
 - Order
 - OrderedItems
+- Transaction
 
 ## Example POST requests:
 
@@ -78,10 +89,12 @@ http://localhost:8080/swagger-ui/index.html#/
 
 ## Thumbnail location 
 
-Go to the `application.properties` and edit `image_location` property
-The products' thumbnails will save in this folder.
+The default folder for thumbnails is set to `C:\Users\YOURUSERNAME\Inventory_management_system\public`
 
-If you add a new product to the database the `thumbnail` property value will be automatically set to `default.png`.
+Go to the `application.properties` and edit `image_location` property to change
+
+The thumbnails of the products will be saved in this folder.
+
 
 ## Configure mysql database with XAMPP
 1. Go to phpmyadmin and create a new database
@@ -98,3 +111,13 @@ If you add a new product to the database the `thumbnail` property value will be 
 4. `spring.datasource.username=YOUR USERNAME` 
 5. `spring.datasource.password=YOUR PASSWORD`
 6. `spring.jpa.database-platform=org.hibernate.dialect.H2Dialect`
+
+## How to deploy the application with maven
+1. maven clean -f pom.xml
+2. maven package -f pom.xml
+3. `.jar` file will be generated in the target directory
+
+## How to start the Spring Boot backend:
+1. Start the database server
+2. Make a `start.bat` file with this line `java -jar <JARNAME.jar> `
+3. Logs will be generated in the subdirectory `logs`
