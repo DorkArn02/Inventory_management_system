@@ -189,7 +189,14 @@ public class ProductService implements IProductService {
 
         String ext = Objects.requireNonNull(file.getOriginalFilename()).split("\\.")[1];
 
+        // Thumbnail folder
+        File p = new File(FILE_PATH);
+
+        if(!p.exists()){
+            p.mkdirs();
+        }
         File f = new File(FILE_PATH + product.getThumbnail());
+
         if(f.delete() && !f.getName().equals("default.png")){
             System.out.println(product.getThumbnail() + " image deleted");
         }
